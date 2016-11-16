@@ -2,17 +2,13 @@ package com.example.martin.proyectorezero;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -341,48 +337,5 @@ public class MainActivity extends Activity {
         }
     }
 
-/*private class baseAdapter extends BaseAdapter{
-
-    Context context;
-    LayoutInflater layoutInflater;
-    TextView lblnombre , lblcodigo,linea;
-
-    public baseAdapter(Context applicationContext) {
-
-        this.context = applicationContext;
-        layoutInflater = (LayoutInflater)context.getSystemService(LAYOUT_INFLATER_SERVICE);
-
-    }
-
-    @Override
-    public int getCount() {
-        return 1;
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return position;
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        ViewGroup viewGroup = (ViewGroup)layoutInflater.inflate(R.layout.grilla,null);
-        lblcodigo = (TextView)viewGroup.findViewById(R.id.lblcodigo);
-        lblnombre = (TextView)viewGroup.findViewById(R.id.lblnombre);
-        linea = (TextView)viewGroup.findViewById(R.id.linea);
-
-        lblcodigo.setText(codigo.get(position).toString());
-        lblnombre.setText(nombre.get(position).toString());
-
-        return viewGroup;
-
-    }
-}*/
 
 }
