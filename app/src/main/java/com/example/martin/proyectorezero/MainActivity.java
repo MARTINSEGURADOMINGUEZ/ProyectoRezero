@@ -50,20 +50,20 @@ public class MainActivity extends Activity {
 
     }
 
-    public void Eliminar(String codigoElim ){
+    public void Eliminar(final String codigoElim) {
 
         codigo.clear();
         nombre.clear();
         combinacion.clear();
 
-        Toast.makeText(getApplicationContext(),"->"+codigoElim+"<-",Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(),"->"+codigoElim+"<-",Toast.LENGTH_SHORT).show();
 
         AsyncHttpClient client = new AsyncHttpClient();
 
         String url ="http://examenfinal2016.esy.es/PROYECTOWEBSERVICE/CONTROLADOR/SexoControlador.php?op=3";
 
         RequestParams params = new RequestParams();
-        params.add("codsexo",codigoElim.toString());
+        params.add("codsexo", codigoElim);
 
         RequestHandle post = client.post(url, params, new AsyncHttpResponseHandler() {
             @Override
@@ -71,8 +71,11 @@ public class MainActivity extends Activity {
 
                 if(statusCode==200){
 
-                    try{
+                    codigo.clear();
+                    nombre.clear();
+                    combinacion.clear();
 
+                    try{
 
                         JSONArray jsonArray = new JSONArray(new String(responseBody));
 
@@ -86,17 +89,9 @@ public class MainActivity extends Activity {
 
                         }
 
-                        if(combinacion.size()==0){
 
-                            combinacion.clear();
-                            expandableListView.setAdapter(new MiAdaptador(getApplicationContext()));
-                            Toast.makeText(getApplicationContext(),"No hay mas registros para eliminar...",Toast.LENGTH_SHORT).show();
+                        expandableListView.setAdapter(new MiAdaptador(getApplicationContext(), combinacion.size()));
 
-                        }else{
-
-                            expandableListView.setAdapter(new MiAdaptador(getApplicationContext()));
-
-                        }
 
                     }catch (Exception ex){
 
@@ -145,7 +140,7 @@ public class MainActivity extends Activity {
 
                         if(combinacion.size()>0){
 
-                            expandableListView.setAdapter(new MiAdaptador(getApplicationContext()));
+                            expandableListView.setAdapter(new MiAdaptador(getApplicationContext(), combinacion.size()));
 
                         }else{
 
@@ -170,87 +165,26 @@ public class MainActivity extends Activity {
 
         });
 
-
     }
-
-    /*public void CargarDatos(){
-
-        nombre.clear();
-        codigo.clear();
-
-        AsyncHttpClient client = new AsyncHttpClient();
-
-        client.get("http://examenfinal2016.esy.es/PROYECTOWEBSERVICE/CONTROLADOR/SexoControlador.php?op=1", new AsyncHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-
-                if (statusCode == 200) {
-
-                    CargarLista(objDatosJSON(new String(responseBody)));
-
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-
-                Toast.makeText(getApplicationContext(),"NO OCURRE NADA",Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-
-    }*/
-
-   /* public void CargarLista(ArrayList<String> datos){
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,datos);
-
-        lstvw.setAdapter(adapter);
-
-    }*/
-
-    /*public ArrayList<String> objDatosJSON(String response){
-
-        ArrayList<String> listado = new ArrayList<String>();
-
-        try{
-
-            JSONArray jsonArray = new JSONArray(response);
-            String texto ;
-
-            for(int i=0; i<jsonArray.length();i++){
-
-               texto = jsonArray.getJSONObject(i).getString("CODSEXO")+"-"+ jsonArray.getJSONObject(i).getString("NOMBSEXO")+"\n";
-
-                listado.add(texto);
-
-            }
-
-        }catch(Exception ex){
-
-        }
-
-        return listado;
-    }*/
 
     private class MiAdaptador extends BaseExpandableListAdapter{
 
         Context context;
         LayoutInflater layoutInflater;
+        int tamaño;
         TextView lblnombre , lblcodigo,linea;
         Button btn1 , btn2;
 
-        public MiAdaptador(Context contextApplication) {
+        public MiAdaptador(Context contextApplication, int combinacion) {
 
             this.context = contextApplication;
             layoutInflater = (LayoutInflater)context.getSystemService(LAYOUT_INFLATER_SERVICE);
-
+            this.tamaño = combinacion;
         }
 
         @Override
         public int getGroupCount() {
-            return combinacion.size();
+            return tamaño;
         }
 
         @Override
@@ -315,7 +249,8 @@ public class MainActivity extends Activity {
                 public void onClick(View v) {
 
                     Eliminar(codigo.get(groupPosition).toString());
-                    CargarLista();
+
+
                 }
             });
 
