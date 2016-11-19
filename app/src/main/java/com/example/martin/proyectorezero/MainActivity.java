@@ -2,6 +2,7 @@ package com.example.martin.proyectorezero;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,12 +26,16 @@ import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends Activity {
 
+    String tipo = "";
+
     ArrayList codigo = new ArrayList();
     ArrayList nombre = new ArrayList();
     ArrayList combinacion = new ArrayList();
 
     //Este es el nuevo ejemplo
     ExpandableListView expandableListView;
+
+    Button btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +50,37 @@ public class MainActivity extends Activity {
 
         expandableListView = (ExpandableListView)findViewById(R.id.LstvwExpan);
 
+        btn = (Button) findViewById(R.id.button);
+
         CargarLista();
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                AgregarNuevo();
+
+            }
+        });
 
 
     }
 
-    public void Eliminar(final String codigoElim) {
+    public void AgregarNuevo() {
+
+        tipo = null;
+
+        tipo = "agregar";
+
+        Intent intent = new Intent(MainActivity.this, NuevoActivity.class);
+
+        intent.putExtra("TipoAccion", tipo);
+
+        startActivity(intent);
+
+    }
+
+    public void Eliminar(String codigoElim) {
 
         codigo.clear();
         nombre.clear();
@@ -70,10 +100,6 @@ public class MainActivity extends Activity {
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 
                 if(statusCode==200){
-
-                    codigo.clear();
-                    nombre.clear();
-                    combinacion.clear();
 
                     try{
 
@@ -109,7 +135,19 @@ public class MainActivity extends Activity {
 
     }
 
-    public void Modificar(){Toast.makeText(getApplicationContext(),"Se modificara pronto...",Toast.LENGTH_SHORT).show();}
+    public void Modificar(String Codigo) {
+
+        tipo = null;
+
+        tipo = "modificar";
+
+        Intent intent = new Intent(MainActivity.this, NuevoActivity.class);
+        intent.putExtra("TipoAccion", tipo);
+        intent.putExtra("Codigo", Codigo);
+
+        startActivity(intent);
+
+    }
 
     public void CargarLista(){
 
@@ -258,7 +296,7 @@ public class MainActivity extends Activity {
                 @Override
                 public void onClick(View v) {
 
-                    Modificar();
+                    Modificar(codigo.get(groupPosition).toString());
 
                 }
             });
