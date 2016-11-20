@@ -58,7 +58,7 @@ public class NuevoActivity extends Activity {
                 lbl1.setText("ESTA PANTALLA SERA PARA MODIFICAR");
 
                 edt1.setHint(intentrecibido.getStringExtra("Codigo") + "-> :V");
-                edt2.setText(" ");
+                edt2.setText(intentrecibido.getStringExtra("Nombre"));
                 edt2.setFocusable(true);
 
                 codigo = intentrecibido.getStringExtra("Codigo");
@@ -71,7 +71,15 @@ public class NuevoActivity extends Activity {
 
                         mensaje = edt2.getText().toString();
 
-                        metodoModificar(codigo, mensaje);
+                        if (mensaje.isEmpty()) {
+
+                            edt2.setError("ESTE CAMPO NO PUEDE ESTAR VACIO");
+
+                        } else {
+
+                            metodoModificar(codigo, mensaje);
+
+                        }
 
                     }
                 });
@@ -82,14 +90,25 @@ public class NuevoActivity extends Activity {
             case "agregar":
 
                 lbl1.setText("ESTA PANTALLA ES PARA GUARDAR");
-                edt1.setHint("Campo Codigo Autogenerado....");
+                edt1.setHint("Codigo Autogenerado....");
                 edt2.setFocusable(true);
 
                 btn2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
-                        metodo1();
+                        mensaje = edt2.getText().toString();
+
+                        if (mensaje.isEmpty()) {
+
+                            edt2.setError("ESTE CAMPO NO PUEDE ESTAR VACIO");
+
+                        } else {
+
+                            metodoGuardar(mensaje);
+                            edt2.setText(" ");
+
+                        }
 
                     }
                 });
@@ -123,15 +142,65 @@ public class NuevoActivity extends Activity {
 
     }
 
-    public void metodo1() {
-        Toast.makeText(getApplicationContext(), "HOLA GUARDAR", Toast.LENGTH_SHORT).show();
+    public void metodoGuardar(String contenidoCampo) {
+
+
+        estado.clear();
+
+        AsyncHttpClient client = new AsyncHttpClient();
+
+        String url = "http://examenfinal2016.esy.es/PROYECTOWEBSERVICE/CONTROLADOR/SexoControlador.php?op=2";
+
+        RequestParams params = new RequestParams();
+
+        params.add("nombsex", contenidoCampo);
+
+        RequestHandle post = client.post(url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+
+                if (statusCode == 200) {
+
+                    try {
+
+                        JSONArray jsonArray = new JSONArray(new String(responseBody));
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+
+                            estado.add(jsonArray.getJSONObject(i).getString("estado"));
+
+                        }
+
+                        //Toast.makeText(getApplicationContext(), estado.get(0).toString() , Toast.LENGTH_SHORT).show();
+
+                        if (estado.get(0).toString() == "success") {
+
+                            Toast.makeText(getApplicationContext(), " SE GRABO CORRECTAMENTE", Toast.LENGTH_SHORT).show();
+
+                        } else {
+
+                            Toast.makeText(getApplicationContext(), " NO SE GRABO :V", Toast.LENGTH_SHORT).show();
+
+                        }
+
+                    } catch (Exception ex) {
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+
+            }
+        });
+
     }
 
     public void metodoModificar(String codigo, String contenidocampo) {
 
         estado.clear();
-
-        Toast.makeText(getApplicationContext(), "LOS DATOS SON :" + codigo + " y " + contenidocampo, Toast.LENGTH_SHORT).show();
 
         AsyncHttpClient client = new AsyncHttpClient();
 
@@ -156,6 +225,8 @@ public class NuevoActivity extends Activity {
                             estado.add(jsonArray.getJSONObject(i).getString("estado"));
 
                         }
+
+                        //Toast.makeText(getApplicationContext(), estado.get(0).toString() , Toast.LENGTH_SHORT).show();
 
                         if (estado.get(0).toString() == "success") {
 

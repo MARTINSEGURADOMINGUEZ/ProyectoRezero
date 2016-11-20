@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +36,8 @@ public class MainActivity extends Activity {
     //Este es el nuevo ejemplo
     ExpandableListView expandableListView;
 
-    Button btn;
+    Button btn, btn1;
+    EditText edt1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +47,36 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
-       // lstvw = (ListView)findViewById(R.id.lstVW);
-        //CargarDatos();
-
         expandableListView = (ExpandableListView)findViewById(R.id.LstvwExpan);
 
         btn = (Button) findViewById(R.id.button);
+        btn1 = (Button) findViewById(R.id.btnBuscar);
 
+        edt1 = (EditText) findViewById(R.id.edt1);
+
+        //AQUI CARGAMOS LOS DATOS EN EL EXPANDABLELISTVIEW
         CargarLista();
+
+        btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String validar = edt1.getText().toString();
+
+                if (validar.isEmpty()) {
+
+                    CargarLista();
+                    edt1.setError("Ingrese Nonbre xfavor...");
+
+                } else {
+
+                    Buscar(validar);
+
+
+                }
+
+            }
+        });
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,6 +87,69 @@ public class MainActivity extends Activity {
             }
         });
 
+
+    }
+
+    public void Buscar(String nombreRecibido) {
+
+        codigo.clear();
+        nombre.clear();
+        combinacion.clear();
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url = "http://examenfinal2016.esy.es/PROYECTOWEBSERVICE/CONTROLADOR/SexoControlador.php?op=5";
+
+        RequestParams requestParams = new RequestParams();
+        requestParams.add("nombsex", nombreRecibido);
+
+        //Toast.makeText(getApplicationContext(),"->"+nombre+"<-",Toast.LENGTH_SHORT).show();
+
+        RequestHandle post = client.post(url, requestParams, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+
+                if (statusCode == 200) {
+
+                    try {
+
+                        JSONArray jsonArray = new JSONArray(new String(responseBody));
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+
+                            codigo.add(jsonArray.getJSONObject(i).getInt("CODSEXO"));
+                            nombre.add(jsonArray.getJSONObject(i).getString("NOMBSEXO"));
+
+                            //Este array se creo para concatenar los array's cargados , sirve para el BaseAdapter.
+                            combinacion.add(codigo + " " + nombre);
+                        }
+
+                        if (combinacion.size() == 0) {
+
+                            combinacion.clear();
+                            expandableListView.setAdapter(new MiAdaptador(getApplicationContext(), combinacion.size()));
+                            Toast.makeText(getApplicationContext(), "No hay resultados...", Toast.LENGTH_SHORT).show();
+
+                        } else {
+
+                            expandableListView.setAdapter(new MiAdaptador(getApplicationContext(), combinacion.size()));
+                            combinacion.clear();
+
+                        }
+
+                    } catch (Exception ex) {
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+
+                Toast.makeText(getApplicationContext(), "NO LLEGO EL PARAMETRO ADECUADO...", Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
     }
 
@@ -135,7 +222,7 @@ public class MainActivity extends Activity {
 
     }
 
-    public void Modificar(String Codigo) {
+    public void Modificar(String Codigo, String Nombre) {
 
         tipo = null;
 
@@ -144,6 +231,7 @@ public class MainActivity extends Activity {
         Intent intent = new Intent(MainActivity.this, NuevoActivity.class);
         intent.putExtra("TipoAccion", tipo);
         intent.putExtra("Codigo", Codigo);
+        intent.putExtra("Nombre", Nombre);
 
         startActivity(intent);
 
@@ -296,7 +384,7 @@ public class MainActivity extends Activity {
                 @Override
                 public void onClick(View v) {
 
-                    Modificar(codigo.get(groupPosition).toString());
+                    Modificar(codigo.get(groupPosition).toString(), nombre.get(groupPosition).toString());
 
                 }
             });

@@ -11,11 +11,33 @@
 
     tools:context="com.example.martin.proyectorezero.MainActivity">
 
+    <LinearLayout
+        android:id="@+id/LinearLYT"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/edt1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Buscar por Nombre..."
+            android:inputType="textPersonName" />
+
+        <Button
+            android:id="@+id/btnBuscar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Buscar" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/layout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/LinearLYT"
         android:orientation="vertical">
 
         <Button
