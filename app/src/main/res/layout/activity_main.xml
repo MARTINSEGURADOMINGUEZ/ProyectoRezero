@@ -33,18 +33,37 @@
 
     </LinearLayout>
 
+
+    <LinearLayout
+
+        android:id="@+id/LinearLYT2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/LinearLYT"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:text="INSERTAR NUEVO" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="REFRESH :V" />
+
+    </LinearLayout>
+
+
     <LinearLayout
         android:id="@+id/layout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/LinearLYT"
+        android:layout_below="@+id/LinearLYT2"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="INSERTAR NUEVO" />
 
         <ExpandableListView
 
@@ -55,5 +74,6 @@
             android:layout_alignParentTop="true" />
 
     </LinearLayout>
+
 
 </RelativeLayout>

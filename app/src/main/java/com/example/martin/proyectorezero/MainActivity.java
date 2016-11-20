@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
     //Este es el nuevo ejemplo
     ExpandableListView expandableListView;
 
-    Button btn, btn1;
+    Button btn, btn1, btn2;
     EditText edt1;
 
     @Override
@@ -51,6 +51,7 @@ public class MainActivity extends Activity {
 
         btn = (Button) findViewById(R.id.button);
         btn1 = (Button) findViewById(R.id.btnBuscar);
+        btn2 = (Button) findViewById(R.id.button2);
 
         edt1 = (EditText) findViewById(R.id.edt1);
 
@@ -83,6 +84,17 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
 
                 AgregarNuevo();
+
+            }
+        });
+
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                CargarLista();
+                Toast.makeText(getApplicationContext(), "Actualizando Registros.... :V", Toast.LENGTH_SHORT).show();
+
 
             }
         });
